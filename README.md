@@ -1,8 +1,14 @@
-# ANLY580-final-project
+# A Constrained Long-form Question Answering Model
+
+A final project for ANLY-580 at Georgetown University.
 
 - Jingsong Gao, jg2109
 - Qinren Zhou, qz142
 - Rui Qiu, rq47
+
+![img](https://images.squarespace-cdn.com/content/v1/510699ffe4b08ec13ec4aa1f/1366777178736-N4TDH9YOKKO1S4AKUZMF/082_Bert-Bart.jpg?format=1000w)
+
+> Credit: [Darren Lebeuf](http://landoflebeef.com/blog/2013/4/24/bert-and-bart)
 
 ## Proposal
 
