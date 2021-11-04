@@ -38,12 +38,12 @@ def get_reddit_backup_urls(mode):
 
 
 def check_download_end():
-    while True:
+    for i in range(3):
         suffix = [f_name.split('.')[-1] for f_name in os.listdir('reddit_tmp')]
-        if 'aria2' in suffix:
-            sleep(10)
-        else:
-            break
+        if 'aria2' not in suffix:
+            return True
+        sleep(10)
+    return False
 
 
 def download(file_urls, ym_list, mode, max_connection=8, max_concurrent=4, retries=4):
@@ -54,7 +54,7 @@ def download(file_urls, ym_list, mode, max_connection=8, max_concurrent=4, retri
     :param mode: 'Q' for questions, 'A' for answers
     :param max_connection: -x parameter for aria2c
     :param max_concurrent: batch size of download+preprocess and -j parameter for aria2c
-    :param retries: -m parameter for aria2c
+    :param retries: maximum retry times when downloads failed
     :return:
     """
     st_time = time()
@@ -65,13 +65,15 @@ def download(file_urls, ym_list, mode, max_connection=8, max_concurrent=4, retri
         with open(download_list_name, 'w') as f:
             f.writelines('\n'.join(f_urls))
         print('downloading %s-%s %2f' % (yms[0], yms[-1], time() - st_time))
-        subprocess.run(['aria2c', '-j', str(max_concurrent),
-                        '-x', str(max_connection),
-                        '-m', str(retries),
-                        '-d', 'reddit_tmp',
-                        '-i', download_list_name], stdout=subprocess.PIPE)
+        while retries > 0:
+            subprocess.run(['aria2c', '-c',
+                            '-j', str(max_concurrent),
+                            '-x', str(max_connection),
+                            '-m', str(retries),
+                            '-d', 'reddit_tmp',
+                            '-i', download_list_name], stdout=subprocess.PIPE)
+            retries = 0 if check_download_end() else retries - 1
         print('downloaded %s-%s %2f' % (yms[0], yms[-1], time() - st_time))
-        check_download_end()
         local_names = [pjoin('reddit_tmp', url.split('/')[-1]) for url in f_urls]
         for f_name, ym in zip(local_names, yms):
             if f_name.split('.')[-1] == 'xz':
@@ -146,6 +148,8 @@ def main():
                         help='starting month')
     parser.add_argument('-em', '--end_month', default=6, type=int, metavar='N',
                         help='end month')
+    parser.add_argument('-x', '--parallel', default=4, type=int, metavar='N',
+                        help='end month')
     parser.add_argument('-Q', '--questions_only', action='store_true',
                         help='only download submissions')
     parser.add_argument('-A', '--answers_only', action='store_true',
@@ -162,9 +166,9 @@ def main():
         q_urls.append(dict_date_url_q[ym])
         a_urls.append(dict_date_url_a[ym])
     if not args.answers_only:
-        download(q_urls, year_month_list, mode='Q')
+        download(q_urls, year_month_list, mode='Q', max_concurrent=args.parallel)
     if not args.questions_only:
-        download(a_urls, year_month_list, mode='A')
+        download(a_urls, year_month_list, mode='A', max_concurrent=args.parallel)
 
 
 if __name__ == '__main__':
