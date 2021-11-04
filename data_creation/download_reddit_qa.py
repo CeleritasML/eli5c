@@ -37,8 +37,8 @@ def get_reddit_backup_urls(mode):
     return dict_date_url
 
 
-def check_download_end():
-    for i in range(3):
+def check_download_end(retries):
+    for i in range(retries):
         suffix = [f_name.split('.')[-1] for f_name in os.listdir('reddit_tmp')]
         if 'aria2' not in suffix:
             return True
@@ -65,14 +65,15 @@ def download(file_urls, ym_list, mode, max_connection=8, max_concurrent=4, retri
         with open(download_list_name, 'w') as f:
             f.writelines('\n'.join(f_urls))
         print('downloading %s-%s %2f' % (yms[0], yms[-1], time() - st_time))
-        while retries > 0:
+        r = retries
+        while r > 0:
             subprocess.run(['aria2c', '-c',
                             '-j', str(max_concurrent),
                             '-x', str(max_connection),
                             '-m', str(retries),
                             '-d', 'reddit_tmp',
                             '-i', download_list_name], stdout=subprocess.PIPE)
-            retries = 0 if check_download_end() else retries - 1
+            r = 0 if check_download_end(retries) else r - 1
         print('downloaded %s-%s %2f' % (yms[0], yms[-1], time() - st_time))
         local_names = [pjoin('reddit_tmp', url.split('/')[-1]) for url in f_urls]
         for f_name, ym in zip(local_names, yms):
