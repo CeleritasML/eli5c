@@ -2,9 +2,9 @@
 
 A final project for ANLY-580 at Georgetown University.
 
-- Jingsong Gao, jg2109
-- Qinren Zhou, qz142
-- Rui Qiu, rq47
+- Jingsong Gao, jg2109@georgetown.edu
+- Qinren Zhou, qz142@georgetown.edu
+- Rui Qiu, rq47@georgetown.edu
 
 ![img](https://images.squarespace-cdn.com/content/v1/510699ffe4b08ec13ec4aa1f/1366777178736-N4TDH9YOKKO1S4AKUZMF/082_Bert-Bart.jpg?format=1000w)
 
