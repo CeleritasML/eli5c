@@ -115,7 +115,7 @@ def download(file_urls, ym_list, mode, max_connection=8, max_concurrent=4, retri
                         preprocess_lines.append(l)
             print('Select %d lines after preprocessing' % len(preprocess_lines), time() - st_time)
             y, m = ym
-            with open(f'preprocess_data/reddit-{mode.lower()}-{y}-{m}.json', 'w') as out:
+            with open(f'preprocess_data/{mode.lower()}/reddit-{mode.lower()}-{y}-{m}.json', 'w') as out:
                 out.writelines(''.join(preprocess_lines))
             print('Saved %s %2f' % (f_name, time() - st_time))
 
@@ -161,6 +161,8 @@ def main():
     year_month_list = year_month_period(args.start_year, args.start_month, args.end_year, args.end_month)
     subprocess.run(['mkdir', 'reddit_tmp'], stdout=subprocess.PIPE)
     subprocess.run(['mkdir', 'preprocess_data'], stdout=subprocess.PIPE)
+    subprocess.run(['mkdir', 'preprocess_data/q'], stdout=subprocess.PIPE)
+    subprocess.run(['mkdir', 'preprocess_data/a'], stdout=subprocess.PIPE)
     q_urls = []
     a_urls = []
     for ym in year_month_list:
