@@ -150,7 +150,7 @@ def main():
     parser.add_argument('-em', '--end_month', default=6, type=int, metavar='N',
                         help='end month')
     parser.add_argument('-x', '--parallel', default=4, type=int, metavar='N',
-                        help='end month')
+                        help='concurrent download files')
     parser.add_argument('-Q', '--questions_only', action='store_true',
                         help='only download submissions')
     parser.add_argument('-A', '--answers_only', action='store_true',
