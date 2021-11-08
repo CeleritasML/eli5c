@@ -1,4 +1,4 @@
-# ELI5-Category: A categorized open domain QA dataset
+# ELI5-Category: A categorized open-domain QA dataset
 
 ## Table of Contents
 - [Dataset Description](#dataset-description)
@@ -33,7 +33,7 @@
 
 ### Dataset Summary
 
-The ELI5-Category dataset is a smaller but newer and categorized version of the original ELI5 dataset. It's an English-language dataset of questions and answers gathered from the [r/explainlikeimfive](https://www.reddit.com/r/explainlikeimfive/) subreddit where users ask factual questions requiring paragraph-length or longer answers. After 2017, a tagging system was introduced to this subreddit so that the questions can be categorized to different topics according to their tags. Since the training and validation set are built by questions in different topics, the dateset is expected to alleviate the train/validation overlapping issue in the original [ELI5 dataset](https://huggingface.co/datasets/eli5).
+The ELI5-Category dataset is a smaller but newer and categorized version of the original ELI5 dataset. It's an English-language dataset of questions and answers gathered from the [r/explainlikeimfive](https://www.reddit.com/r/explainlikeimfive/) subreddit where users ask factual questions requiring paragraph-length or longer answers. After 2017, a tagging system was introduced to this subreddit so that the questions can be categorized into different topics according to their tags. Since the training and validation set is built by questions in different topics, the dataset is expected to alleviate the train/validation overlapping issue in the original [ELI5 dataset](https://huggingface.co/datasets/eli5).
 
 ### Supported Tasks and Leaderboards
 
@@ -84,7 +84,7 @@ An example from the ELI5-Category set looks as follows:
 
 ### Data Splits
 
-In order to avoid having duplicate questions in across sets, three non-overlapping subsets of `category` are used in the training, validation and test set. The final split sizes are as follows:
+In order to avoid having duplicate questions across sets, three non-overlapping subsets of `category` are used in the training, validation and test set. The final split sizes are as follows:
 
 |                   | Train   | Valid | Test |
 | -----             | ------ | ----- | ---- |
@@ -105,7 +105,7 @@ In order to avoid having duplicate questions in across sets, three non-overlappi
 
 ### Curation Rationale
 
-ELI5-Category was built to provide a testbed for machines to learn how to answer more complex questions, which requires them to find and combine information in a coherent manner. The dataset was built by gathering questions that were asked by community members of three subreddits, including [r/explainlikeimfive](https://www.reddit.com/r/explainlikeimfive/), along with the answers that were provided by other users. The [rules of the subreddit](https://www.reddit.com/r/explainlikeimfive/wiki/detailed_rules) make this data particularly well suited to training a model for abstractive question answering: the questions need to seek an objective explanation about well established facts, and the answers provided need to be understandable to a layperson without any particular knowledge domain.
+ELI5-Category was built to provide a testbed for machines to learn how to answer more complex questions, which requires them to find and combine the information in a coherent manner. The dataset was built by gathering questions that were asked by community members of three subreddits, including [r/explainlikeimfive](https://www.reddit.com/r/explainlikeimfive/), along with the answers that were provided by other users. The [rules of the subreddit](https://www.reddit.com/r/explainlikeimfive/wiki/detailed_rules) make this data particularly well suited to training a model for abstractive question answering: the questions need to seek an objective explanation about well-established facts, and the answers provided need to be understandable to a layperson without any particular knowledge domain.
 
 ### Source Data
 
@@ -113,7 +113,7 @@ ELI5-Category was built to provide a testbed for machines to learn how to answer
 
 The data was obtained by filtering submissions and comments from the subreddits of interest from the XML dumps of the [Reddit forum](https://www.reddit.com/) hosted on [Pushshift.io](https://files.pushshift.io/reddit/).
 
-In order to further improve the quality of the selected examples, only questions with a score of at least 2 and at least one answer with a score of at least 2 were selected for the dataset. The dataset questions and answers span a period form January 2017 to June 2021.
+In order to further improve the quality of the selected examples, only questions with a score of at least 2 and at least one answer with a score of at least 2 were selected for the dataset. The dataset questions and answers span a period from January 2017 to June 2021.
 
 #### Who are the source language producers?
 
@@ -153,7 +153,7 @@ The dataset has similar limitations to the original ELI5 dataset [Other Known Li
 
 ### Dataset Curators
 
-The dataset was initially created by Jingsong Gao, Qinren Zhou, Rui Qiu, during course project of `ANLY 580` at Georgetown University.
+The dataset was initially created by Jingsong Gao, Qinren Zhou, Rui Qiu, during a course project of `ANLY 580` at Georgetown University.
 
 ### Licensing Information
 
@@ -161,7 +161,7 @@ The licensing status of the dataset hinges on the legal status of the [Pushshift
 
 ### Citation Information
 
-This dataset is not published by any paper.
+This dataset is not published in any paper.
 
 ### Contributions
 
