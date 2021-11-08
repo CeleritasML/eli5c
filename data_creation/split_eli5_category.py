@@ -35,21 +35,28 @@ def main():
     splits = {k: set(category) for k, category in splits.items()}
     train_set = []
     validation_set = []
+    validation_set2 = []
     test_set = []
     for qa in qa_list:
         if qa['category'] in splits['train']:
             train_set.append(qa)
-        elif qa['category'] in splits['validation']:
+        elif qa['category'] in splits['val1']:
             validation_set.append(qa)
+        elif qa['category'] in splits['val2']:
+            validation_set2.append(qa)
         elif qa['category'] in splits['test']:
             test_set.append(qa)
-    print('Finish splitting, %d QA pairs in training set, %d QA pairs in validation set, %d QA pairs in test set' %
-          (len(train_set), len(validation_set), len(test_set)), time() - st_time)
+    print('Finish splitting, %d QA pairs in training set, %d QA pairs in validation set 1, %d QA pairs in validation '
+          'set 2, %d QA pairs in test set' %
+          (len(train_set), len(validation_set), len(validation_set2), len(test_set)), time() - st_time)
     with open(pjoin(args.output, 'eli5-category-train.json'), 'w') as f:
         json.dump(train_set, f)
         print('Saved training dataset to %s' % f.name, time() - st_time)
-    with open(pjoin(args.output, 'eli5-category-validation.json'), 'w') as f:
+    with open(pjoin(args.output, 'eli5-category-validation-1.json'), 'w') as f:
         json.dump(validation_set, f)
+        print('Saved validation dataset to %s' % f.name, time() - st_time)
+    with open(pjoin(args.output, 'eli5-category-validation-2.json'), 'w') as f:
+        json.dump(validation_set2, f)
         print('Saved validation dataset to %s' % f.name, time() - st_time)
     with open(pjoin(args.output, 'eli5-category-test.json'), 'w') as f:
         json.dump(test_set, f)
@@ -58,8 +65,11 @@ def main():
         with gzip.open('dataset/eli5-category-train.json.gz', 'wt', encoding='UTF-8') as f_compress:
             f_compress.write(json.dumps(train_set))
             print('Saved compressed training dataset to %s' % f_compress.name, time() - st_time)
-        with gzip.open('dataset/eli5-category-validation.json.gz', 'wt', encoding='UTF-8') as f_compress:
+        with gzip.open('dataset/eli5-category-validation-1.json.gz', 'wt', encoding='UTF-8') as f_compress:
             f_compress.write(json.dumps(validation_set))
+            print('Saved compressed validation dataset to %s' % f_compress.name, time() - st_time)
+        with gzip.open('dataset/eli5-category-validation-2.json.gz', 'wt', encoding='UTF-8') as f_compress:
+            f_compress.write(json.dumps(validation_set2))
             print('Saved compressed validation dataset to %s' % f_compress.name, time() - st_time)
         with gzip.open('dataset/eli5-category-test.json.gz', 'wt', encoding='UTF-8') as f_compress:
             f_compress.write(json.dumps(test_set))

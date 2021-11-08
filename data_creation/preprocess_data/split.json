@@ -1,5 +1,6 @@
 {
   "train": ["Biology", "Chemistry", "Earth Science", "Economics", "Mathematics", "Other", "Physics", "Psychology", "Technology"],
-  "validation": ["Culture"],
+  "val1": ["Culture"],
+  "val2": ["Repost"],
   "test": ["Engineering"]
 }

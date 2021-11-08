@@ -76,13 +76,16 @@ class ELI5Category(datasets.GeneratorBasedBuilder):
         _URL = 'https://github.com/rexarski/ANLY580-final-project/raw/main/data_creation/dataset/'
         downloaded_files = dl_manager.download_and_extract({
             'train': _URL + 'eli5-category-train.json.gz',
-            'val': _URL + 'eli5-category-validation.json.gz',
+            'val1': _URL + 'eli5-category-validation-1.json.gz',
+            'val2': _URL + 'eli5-category-validation-2.json.gz'
         })
         return [
             datasets.SplitGenerator(name=datasets.Split.TRAIN,
                                     gen_kwargs={'filepath': downloaded_files['train']}),
-            datasets.SplitGenerator(name=datasets.Split.VALIDATION,
-                                    gen_kwargs={'filepath': downloaded_files['val']}),
+            datasets.SplitGenerator(name=datasets.Split("validation1"),
+                                    gen_kwargs={'filepath': downloaded_files['val1']}),
+            datasets.SplitGenerator(name=datasets.Split("validation2"),
+                                    gen_kwargs={'filepath': downloaded_files['val2']})
         ]
 
     def _generate_examples(self, filepath):

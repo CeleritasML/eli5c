@@ -48,7 +48,7 @@ The text in the dataset is in English, as spoken by Reddit users on the  [r/expl
 ### Data Instances
 
 The structure of this dataset is very similar to the original [ELI5 dataset](https://huggingface.co/datasets/eli5). A typical data point comprises a question, with a `title` containing the main question and a `selftext` which sometimes elaborates on it, and a list of answers from the forum sorted by scores they obtained. Additionally, the URLs in each of the text fields have been extracted to respective lists and replaced by generic tokens in the text.   
-In addition to the original ELI5 dataset, the data point also has a `category` field. There are 11 different values of `category` in this dataset: `Biology`,`Chemistry`,`Culture`,`Earth Science`,`Economics`,`Engineering`,`Mathematics`,`Other`,`Physics`,`Psychology`,`Technology`.
+In addition to the original ELI5 dataset, the data point also has a `category` field. There are 11 common values of `category` in this dataset: `Biology`,`Chemistry`,`Culture`,`Earth Science`,`Economics`,`Engineering`,`Mathematics`,`Other`,`Physics`,`Psychology`,`Technology`, and a special `category`: `Repost` indicates the same question has been asked before.
  
 An example from the ELI5-Category set looks as follows:
 ```
@@ -83,22 +83,24 @@ An example from the ELI5-Category set looks as follows:
 
 ### Data Splits
 
-In order to avoid having duplicate questions across sets, three non-overlapping subsets of `category` are used in the training, validation and test set. The final split sizes are as follows:
+In order to avoid having duplicate questions across sets, three non-overlapping subsets of `category` are used in the training, validation and test set. Also, a special validation set contains all the questions in `Repost` category. A valid retriever-generator model should have consistent performances on both validation sets.  
+The final split sizes are as follows:
 
-|                   | Train   | Valid | Test |
-| -----             | ------ | ----- | ---- |
-| `Biology`         | 32785 |       |       |
-| `Chemistry`       | 6635  |       |       |
-| `Culture`         |       | 5447  |       |
-| `Earth Science`   | 678   |       |       |
-| `Economics`       | 5903  |       |       |
-| `Engineering`     |       |       | 5413  |
-| `Mathematics`     | 1913  |       |       |
-| `Other`           | 19319 |       |       |
-| `Physics`         | 10201 |       |       |
-| `Psychology`      | 339   |       |       |
-| `Technology`      | 14037 |       |       |
-| **Total**         | 91810 | 5447  | 5413 |
+|                   | Train   | Valid | Valid2 |Test |
+| -----             | ------ | ----- | ---- | ---- |
+| `Biology`         | 32769 |       |       |      |
+| `Chemistry`       | 6633  |       |       |      |
+| `Culture`         |       | 5446  |       |      |
+| `Earth Science`   | 677   |       |       |      |
+| `Economics`       | 5901  |       |       |      |
+| `Engineering`     |       |       |       | 5411 |
+| `Mathematics`     | 1912  |       |       |      |
+| `Other`           | 19312 |       |       |      |
+| `Physics`         | 10196 |       |       |      |
+| `Psychology`      | 338   |       |       |      |
+| `Technology`      | 14034 |       |       |      |
+| `Repost`          |       |       | 2375  |      |
+| **Total**         | 91772 | 5446  | 2375  | 5411 |
 
 ## Dataset Creation
 
