@@ -130,7 +130,7 @@ def main():
         json.dump(final_reddit_list, f)
     print('Saved final dataset to preprocess_data/eli5.json', time() - st_time)
     if args.compress:
-        with gzip.open('../data_creation/preprocess_data/eli5.json.gz', 'wt', encoding='UTF-8') as f_compress:
+        with gzip.open('preprocess_data/eli5.json.gz', 'wt', encoding='UTF-8') as f_compress:
             f_compress.write(json.dumps(final_reddit_list))
         print('Saved compressed final dataset to preprocess_data/eli5.json.gz', time() - st_time)
 
