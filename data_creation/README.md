@@ -63,8 +63,7 @@ An example from the ELI5-Category set looks as follows:
   'score': [13, 3],
   'text_urls': [[],[]]},
  'title_urls': {'url': []},
- 'selftext_urls': {'url': []},
- 'answers_urls': {'url': []}}
+ 'selftext_urls': {'url': []}}
 ```
 
 ### Data Fields
@@ -161,7 +160,15 @@ The licensing status of the dataset hinges on the legal status of the [Pushshift
 
 ### Citation Information
 
-This dataset is not published in any paper.
+```
+@inproceedings{eli5-category,
+  author    = {Jingsong Gao and
+               Qingren Zhou and
+               Rui Qiu},
+  title     = {{ELI5-Category:} A categorized open-domain QA dataset},
+  year      = {2021}
+}
+```
 
 ### Contributions
 
