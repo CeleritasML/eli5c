@@ -1,0 +1,2 @@
+# don't upload origin json files to GitHub
+*.json

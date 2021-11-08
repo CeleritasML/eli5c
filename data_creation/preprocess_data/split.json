@@ -1,0 +1,5 @@
+{
+  "train": ["Biology", "Chemistry", "Earth Science", "Economics", "Mathematics", "Other", "Physics", "Psychology", "Technology"],
+  "validation": ["Culture"],
+  "test": ["Engineering"]
+}
