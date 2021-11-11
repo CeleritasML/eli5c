@@ -19,17 +19,6 @@ def embed_passages_for_retrieval(passages, qa_tokenizer, qa_embedding, max_lengt
     return a_reps.numpy()
 
 
-def embed_questions_for_retrieval(q_ls, qa_tokenizer, qa_embedding, device="cuda:0"):
-    q_toks = qa_tokenizer.batch_encode_plus(q_ls, max_length=128, truncation=True, padding='max_length')
-    q_ids, q_mask = (
-        torch.LongTensor(q_toks["input_ids"]).to(device),
-        torch.LongTensor(q_toks["attention_mask"]).to(device),
-    )
-    with torch.no_grad():
-        q_reps = qa_embedding.embed_questions(q_ids, q_mask).cpu().type(torch.float)
-    return q_reps.numpy()
-
-
 def make_qa_dense_index(
     qa_embedding,
     qa_tokenizer,
