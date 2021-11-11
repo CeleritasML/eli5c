@@ -45,5 +45,5 @@ if __name__ == '__main__':
     tokenizer, model = make_qa_retriever_model(from_file='models/eli5c_retriever_model_val-1_l-8_h-768_b-512-512_9.pth')
     make_qa_dense_index(
         model, tokenizer, wiki40b_snippets, device='cuda:0',
-        index_name='wiki40b_passages_reps_32_l-8_h-768_b-512-512.dat'
+        index_name='embeds/wiki40b_passages_reps_32_l-8_h-768_b-512-512.dat'
     )
