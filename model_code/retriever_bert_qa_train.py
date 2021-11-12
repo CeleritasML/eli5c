@@ -48,7 +48,7 @@ class ELI5CQAEmbedding(torch.nn.Module):
         self.output_dim = 128
         self.project_q = torch.nn.Linear(dim, self.output_dim, bias=False)
         self.project_a = torch.nn.Linear(dim, self.output_dim, bias=False)
-        self.ce_loss = torch.nn.CrossEntropyLoss(reduction="mean")
+        self.ce_loss = torch.nn.CrossEntropyLoss(reduction='mean')
 
     def embed_sentences_checkpointed(self, input_ids, attention_mask, checkpoint_batch_size=-1):
         # reproduces BERT forward pass with checkpointing
@@ -103,7 +103,7 @@ class ELI5CQAEmbedding(torch.nn.Module):
         return loss
 
 
-def make_qa_retriever_model(model_name='google/bert_uncased_L-8_H-768_A-12', from_file=None, device="cuda:0"):
+def make_qa_retriever_model(model_name='google/bert_uncased_L-8_H-768_A-12', from_file=None, device='cuda:0'):
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     bert_model = AutoModel.from_pretrained(model_name).to(device)
     # run bert_model on a dummy batch to get output dimension
@@ -115,22 +115,22 @@ def make_qa_retriever_model(model_name='google/bert_uncased_L-8_H-768_A-12', fro
     qa_embedding = ELI5CQAEmbedding(bert_model, sent_dim).to(device)
     if from_file is not None:
         param_dict = torch.load(from_file)  # has model weights, optimizer, and scheduler states
-        qa_embedding.load_state_dict(param_dict["model"])
+        qa_embedding.load_state_dict(param_dict['model'])
     return tokenizer, qa_embedding
 
 
-def make_qa_retriever_batch(qa_list, tokenizer, max_len=64, device="cuda:0"):
+def make_qa_retriever_batch(qa_list, tokenizer, max_len=64, device='cuda:0'):
     q_ls = [q for q, a in qa_list]
     a_ls = [a for q, a in qa_list]
     q_toks = tokenizer.batch_encode_plus(q_ls, max_length=max_len, truncation=True, padding='max_length')
     q_ids, q_mask = (
-        torch.LongTensor(q_toks["input_ids"]).to(device),
-        torch.LongTensor(q_toks["attention_mask"]).to(device),
+        torch.LongTensor(q_toks['input_ids']).to(device),
+        torch.LongTensor(q_toks['attention_mask']).to(device),
     )
     a_toks = tokenizer.batch_encode_plus(a_ls, max_length=max_len, truncation=True, padding='max_length')
     a_ids, a_mask = (
-        torch.LongTensor(a_toks["input_ids"]).to(device),
-        torch.LongTensor(a_toks["attention_mask"]).to(device),
+        torch.LongTensor(a_toks['input_ids']).to(device),
+        torch.LongTensor(a_toks['attention_mask']).to(device),
     )
     return q_ids, q_mask, a_ids, a_mask
 
@@ -140,10 +140,10 @@ def train_qa_retriever_epoch(model, dataset, tokenizer, optimizer, scheduler, ar
     # make iterator
     train_sampler = RandomSampler(dataset)
     model_collate_fn = functools.partial(
-        make_qa_retriever_batch, tokenizer=tokenizer, max_len=args.max_length, device="cuda:0"
+        make_qa_retriever_batch, tokenizer=tokenizer, max_len=args.max_length, device='cuda:0'
     )
     data_loader = DataLoader(dataset, batch_size=args.batch_size, sampler=train_sampler, collate_fn=model_collate_fn)
-    epoch_iterator = tqdm(data_loader, desc="Iteration", disable=True)
+    epoch_iterator = tqdm(data_loader, desc='Iteration', disable=True)
     # accumulate loss since last print
     loc_steps = 0
     loc_loss = 0.0
@@ -162,7 +162,7 @@ def train_qa_retriever_epoch(model, dataset, tokenizer, optimizer, scheduler, ar
         loc_steps += 1
         if step % args.print_freq == 0 or step == 1:
             print(
-                "{:2d} {:5d} of {:5d} \t L: {:.3f} \t -- {:.3f}".format(
+                '{:2d} {:5d} of {:5d} \t L: {:.3f} \t -- {:.3f}'.format(
                     e, step, len(dataset) // args.batch_size, loc_loss / loc_steps, time() - st_time,
                 )
             )
@@ -175,10 +175,10 @@ def evaluate_qa_retriever(model, dataset, tokenizer, args):
     # make iterator
     eval_sampler = SequentialSampler(dataset)
     model_collate_fn = functools.partial(
-        make_qa_retriever_batch, tokenizer=tokenizer, max_len=args.max_length, device="cuda:0"
+        make_qa_retriever_batch, tokenizer=tokenizer, max_len=args.max_length, device='cuda:0'
     )
     data_loader = DataLoader(dataset, batch_size=args.batch_size, sampler=eval_sampler, collate_fn=model_collate_fn)
-    epoch_iterator = tqdm(data_loader, desc="Iteration", disable=True)
+    epoch_iterator = tqdm(data_loader, desc='Iteration', disable=True)
     tot_loss = 0.0
     with torch.no_grad():
         for step, batch in enumerate(epoch_iterator):
@@ -198,16 +198,16 @@ def train_qa_retriever(model, tokenizer, train_set, valid_set1, valid_set2, mode
     for e in range(model_args.num_epochs):
         train_qa_retriever_epoch(model, train_set, tokenizer, qar_optimizer, qar_scheduler, model_args, e)
         m_save_dict = {
-            "model": model.state_dict(),
-            "optimizer": qar_optimizer.state_dict(),
-            "scheduler": qar_scheduler.state_dict(),
+            'model': model.state_dict(),
+            'optimizer': qar_optimizer.state_dict(),
+            'scheduler': qar_scheduler.state_dict(),
         }
-        print("Saving model {}".format(model_args.model_save_name))
-        torch.save(m_save_dict, "{}_{}.pth".format(model_args.model_save_name, e))
+        print('Saving model {}'.format(model_args.model_save_name))
+        torch.save(m_save_dict, '{}_{}.pth'.format(model_args.model_save_name, e))
         eval_loss1 = evaluate_qa_retriever(model, valid_set1, tokenizer, model_args)
         eval_loss2 = evaluate_qa_retriever(model, valid_set2, tokenizer, model_args)
-        print("Evaluation 1 loss epoch {:4d}: {:.3f}".format(e, eval_loss1))
-        print("Evaluation 2 loss epoch {:4d}: {:.3f}".format(e, eval_loss2))
+        print('Evaluation 1 loss epoch {:4d}: {:.3f}'.format(e, eval_loss1))
+        print('Evaluation 2 loss epoch {:4d}: {:.3f}'.format(e, eval_loss2))
 
 
 class ArgumentsQAR:
@@ -217,7 +217,7 @@ class ArgumentsQAR:
         self.checkpoint_batch_size = 16
         self.print_freq = 1
         self.pretrained_model_name = 'google/bert_uncased_L-8_H-768_A-12'
-        self.model_save_name = "models/eli5c_retriever_model_val-1_l-8_h-768_b-512-512"
+        self.model_save_name = 'models/eli5c_retriever_model'
         self.learning_rate = 2e-4
         self.num_epochs = 10
 
