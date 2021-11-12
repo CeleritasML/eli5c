@@ -26,7 +26,7 @@ def query_qa_dense_index(questions_vectors, wiki_passages, wiki_index, st_time, 
 if __name__ == '__main__':
     st_time = time()
     wiki40b_snippets = datasets.load_dataset('wiki_snippets', name='wiki40b_en_100_0')['train']
-    wiki40b_file_name = 'embeds/wiki40b_passages_reps_32_l-8_h-768_b-512-512.dat'
+    wiki40b_file_name = 'embeds/wiki40b.dat'
     wiki40b_passage_reps = np.memmap(wiki40b_file_name, dtype='float32',
                                      mode='r', shape=(wiki40b_snippets.num_rows, 128))
 
