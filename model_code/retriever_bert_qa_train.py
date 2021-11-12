@@ -226,7 +226,7 @@ if __name__ == '__main__':
     eli5c = datasets.load_dataset('jsgao/eli5_category')
     eli5c_train_set = ELI5CQARetriever(eli5c['train'])
     eli5c_val_set1 = ELI5CQARetriever(eli5c['validation1'])
-    eli5c_val_set2 = ELI5CQARetriever(eli5c['validation1'])
+    eli5c_val_set2 = ELI5CQARetriever(eli5c['validation2'])
     qar_args = ArgumentsQAR()
     qar_tokenizer, qar_model = make_qa_retriever_model(
         model_name=qar_args.pretrained_model_name,
