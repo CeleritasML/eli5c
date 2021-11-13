@@ -8,7 +8,8 @@ eli5c_train_docs = load_support_doc('support_docs/eli5c_train_docs.dat')
 eli5c_val1_docs = load_support_doc('support_docs/eli5c_val1_docs.dat')
 eli5c_val2_docs = load_support_doc('support_docs/eli5c_val2_docs.dat')
 
-tokenizer, model = make_qa_s2s_model(from_file='models/eli5c_bart_model_2.pth')
+tokenizer, model = make_qa_s2s_model(from_file='models/eli5c_bart_model_3.pth')
+save_name = 'examples/bart_answer_epoch3.csv'
 
 
 def qa_s2s_generate(
@@ -47,19 +48,16 @@ def qa_s2s_generate(
     return [qa_s2s_tokenizer.decode(ans_ids, skip_special_tokens=True).strip() for ans_ids in generated_ids]
 
 
-questions = []
-answers1 = []
-answers2 = []
-subsets = []
-
-for i in [12345, 15432, 51232, 57282]:
-    # create support document with the dense index
-    question = eli5c['train'][i]
-    doc = eli5c_train_docs[question['q_id']]
-    # concatenate question and support document into BART input
-    question_doc = 'question: {} context: {}'.format(question['title'], doc)
-    # generate an answer with beam search
-    answer1, answer2 = qa_s2s_generate(
+def gen_answers(dataset, indexes, docs, subset_name, model, tokenizer,
+                results):
+    for i in indexes:
+        question = dataset[i]
+        doc = docs[question['q_id']]
+        # concatenate question and support document into BART input
+        question_doc = 'question: {} context: {}'.format(question['title'], doc)
+        print(question_doc)
+        # generate an answer with beam search
+        answer1, answer2 = qa_s2s_generate(
             question_doc, model, tokenizer,
             num_answers=2,
             num_beams=8,
@@ -67,58 +65,25 @@ for i in [12345, 15432, 51232, 57282]:
             max_len=256,
             max_input_length=512,
             device='cuda:0'
-    )
-    questions += [question['title']]
-    answers1 += [answer1]
-    answers2 += [answer2]
-    subsets += ['train']
+        )
+        print(answer1)
+        results['Question'] += [question['title']]
+        results['Answer1'] += [answer1]
+        results['Answer2'] += [answer2]
+        results['Subset'] += [subset_name]
 
-for i in [0, 123, 3234]:
-    # create support document with the dense index
-    question = eli5c['validation1'][i]
-    doc = eli5c_val1_docs[question['q_id']]
-    # concatenate question and support document into BART input
-    question_doc = 'question: {} context: {}'.format(question['title'], doc)
-    # generate an answer with beam search
-    answer1, answer2 = qa_s2s_generate(
-            question_doc, model, tokenizer,
-            num_answers=2,
-            num_beams=8,
-            min_len=64,
-            max_len=256,
-            max_input_length=512,
-            device='cuda:0'
-    )
-    questions += [question['title']]
-    answers1 += [answer1]
-    answers2 += [answer2]
-    subsets += ['val1']
 
-for i in [2, 644, 1476]:
-    # create support document with the dense index
-    question = eli5c['validation2'][i]
-    doc = eli5c_val2_docs[question['q_id']]
-    # concatenate question and support document into BART input
-    question_doc = 'question: {} context: {}'.format(question['title'], doc)
-    # generate an answer with beam search
-    answer1, answer2 = qa_s2s_generate(
-            question_doc, model, tokenizer,
-            num_answers=2,
-            num_beams=8,
-            min_len=64,
-            max_len=256,
-            max_input_length=512,
-            device='cuda:0'
-    )
-    questions += [question['title']]
-    answers1 += [answer1]
-    answers2 += [answer2]
-    subsets += ['val2']
+qa_results = {
+    'Question': [],
+    'Answer1': [],
+    'Answer2': [],
+    'Subset': [],
+}
 
-df = pd.DataFrame({
-    'Question': questions,
-    'Answer1': answers1,
-    'Answer2': answers2,
-    'Subset': subsets,
-})
-df.to_csv('examples/bart_answer.csv', index=False)
+gen_answers(eli5c['train'], [12345, 15432, 51232, 57282], eli5c_train_docs, 'train', model, tokenizer, qa_results)
+gen_answers(eli5c['validation1'], [0, 123, 3234], eli5c_val1_docs, 'val1', model, tokenizer, qa_results)
+gen_answers(eli5c['validation2'], [2, 644, 1476], eli5c_val2_docs, 'val2', model, tokenizer, qa_results)
+
+
+df = pd.DataFrame(qa_results)
+df.to_csv(save_name, index=False)
