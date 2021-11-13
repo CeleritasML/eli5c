@@ -55,7 +55,6 @@ def gen_answers(dataset, indexes, docs, subset_name, model, tokenizer,
         doc = docs[question['q_id']]
         # concatenate question and support document into BART input
         question_doc = 'question: {} context: {}'.format(question['title'], doc)
-        print(question_doc)
         # generate an answer with beam search
         answer1, answer2 = qa_s2s_generate(
             question_doc, model, tokenizer,
@@ -66,7 +65,6 @@ def gen_answers(dataset, indexes, docs, subset_name, model, tokenizer,
             max_input_length=512,
             device='cuda:0'
         )
-        print(answer1)
         results['Question'] += [question['title']]
         results['Answer1'] += [answer1]
         results['Answer2'] += [answer2]
