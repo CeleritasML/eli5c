@@ -14,8 +14,25 @@ Options:
     -v --version                      显示版本
 
 """
+import time
 
 from docopt import docopt
+
+import logging.handlers
+
+date = time.strftime('%Y-%m-%d-%H_%M_%S', time.localtime())
+
+LOG_FILE = f'logs/eli5c_log_{date}.log'
+log_format = '[%(levelname)s] %(asctime)s [%(filename)s:%(lineno)d, %(funcName)s] %(message)s'
+logging.basicConfig(filename=LOG_FILE,
+                    filemode='a',
+                    format=log_format,
+                    level=logging.INFO)
+time_hdls = logging.handlers.TimedRotatingFileHandler(
+  LOG_FILE, when='D', interval=1, backupCount=7)
+logging.getLogger().addHandler(time_hdls)
+
+logging.info('ELI5C Model begin service')
 
 from flask import Flask
 from flask_cors import CORS
