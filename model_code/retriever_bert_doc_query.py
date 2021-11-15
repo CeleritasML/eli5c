@@ -34,9 +34,13 @@ if __name__ == '__main__':
     quantiser = faiss.IndexFlatL2(128)
     wiki40b_index_flat = faiss.IndexIVFFlat(quantiser, 128, 128, faiss.METRIC_L2)
 
-    print('Start to load wiki index from %s' % wiki40b_file_name, time() - st_time)
+    print('Train wiki index from %s' % wiki40b_file_name, time() - st_time)
     wiki40b_index_flat.train(wiki40b_passage_reps)
     wiki40b_index_flat.add(wiki40b_passage_reps)
+
+    print('Save wiki index', time() - st_time)
+    with open('support_docs/wiki40b_index.bin', 'wb') as f:
+        pickle.dump(wiki40b_index_flat, f)
 
     def query_all(q_set, q_embed_file, filename):
         q_id = [q['q_id'] for q in q_set]
