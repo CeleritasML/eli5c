@@ -1,3 +1,4 @@
+import logging
 import math
 import pickle
 from time import time
@@ -113,6 +114,7 @@ class ELI5cQAModel:
 
     def _query_doc(self, question_embed):
         D, I = self.wiki_index.search(question_embed, 10)
+        logging.info('[Support Docs]: %s' % (','.join([str(i) for i in I[0]])))
         res_passages = [self.wiki_snippets[int(i)] for i in I[0]]
         support_doc = "<P> " + " <P> ".join([p["passage_text"] for p in res_passages])
         return support_doc
