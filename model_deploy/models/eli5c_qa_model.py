@@ -8,10 +8,15 @@ import torch
 from torch.utils import checkpoint
 from transformers import AutoTokenizer, AutoModel, AutoModelForSeq2SeqLM
 
+wiki_embedding_path = 'models/wiki40b_index.bin'
+bart_model_name = 'facebook/bart-large'
+retriever_model_path = 'models/eli5c_retriever_model.bin'
+generator_model_path = 'models/eli5c_bart_model_chem1_9.pth'
+
 
 def load_wiki_passage_and_index():
     wiki40b_snippets = datasets.load_dataset('wiki_snippets', name='wiki40b_en_100_0')['train']
-    with open('models/wiki40b_index.bin', 'rb') as f:
+    with open(wiki_embedding_path, 'rb') as f:
         wiki40b_index_flat = pickle.load(f)
     return wiki40b_snippets, wiki40b_index_flat
 
@@ -81,16 +86,16 @@ def load_retriever_model(device='cuda:0'):
     d_mask = torch.LongTensor([[1]]).to(device)
     sent_dim = bert_model(d_ids, attention_mask=d_mask)[1].shape[-1]
     qa_embedding = ELI5CQAEmbedding(bert_model, sent_dim).to(device)
-    param_dict = torch.load('models/eli5c_retriever_model.bin')
+    param_dict = torch.load(retriever_model_path)
     qa_embedding.load_state_dict(param_dict['model'])
     return qa_tokenizer, qa_embedding
 
 
 def load_generator_model(device='cuda:0'):
-    model_name = 'facebook/bart-base'
+    model_name = bart_model_name
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
-    param_dict = torch.load('models/eli5c_bart_model.bin')  # has model weights, optimizer, and scheduler states
+    param_dict = torch.load(generator_model_path)  # has model weights, optimizer, and scheduler states
     model.load_state_dict(param_dict['model'])
     return tokenizer, model
 
