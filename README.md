@@ -1,4 +1,4 @@
-# A Constrained Long-form Question Answering Model
+# A Constrained Long-form Question Answering (LFQA) Model on `ELI5-Category`
 
 A final project for ANLY-580 at Georgetown University.
 
@@ -10,11 +10,11 @@ A final project for ANLY-580 at Georgetown University.
 
 > Credit: [Darren Lebeuf](http://landoflebeef.com/blog/2013/4/24/bert-and-bart)
 
-## Proposal
+## Proposal & Report
 
 [Project proposal](proposal/README.md)
 
-[Report](report/report.md)
+[Final Report](report/report.md)
 
 ## References
 
