@@ -8,9 +8,11 @@ import torch
 from torch.utils import checkpoint
 from transformers import AutoTokenizer, AutoModel, AutoModelForSeq2SeqLM
 
+bert_model_name = 'jsgao/bert-eli5c-retriever'
+bert_projection_layer_path = 'models/bert_eli5c_projection.pt'
 wiki_embedding_path = 'models/wiki40b_index.bin'
+
 bart_model_name = 'jsgao/bart-eli5c'
-retriever_model_path = 'models/eli5c_retriever_model.bin'
 
 
 def load_wiki_passage_and_index():
@@ -74,29 +76,29 @@ class ELI5CQAEmbedding(torch.nn.Module):
         loss = (loss_qa + loss_aq) / 2
         return loss
 
+    def load_projections_state_dict(self, project_layers_dict):
+        self.project_q.load_state_dict(project_layers_dict['project_q'])
+        self.project_a.load_state_dict(project_layers_dict['project_a'])
+
 
 def load_retriever_model(device='cuda:0'):
-    model_name = 'google/bert_uncased_L-8_H-768_A-12'
-    qa_tokenizer = AutoTokenizer.from_pretrained(model_name)
-    bert_model = AutoModel.from_pretrained(model_name).to(device)
+    qa_tokenizer = AutoTokenizer.from_pretrained(bert_model_name)
+    bert_model = AutoModel.from_pretrained(bert_model_name).to(device)
     d_ids = torch.LongTensor(
         [[bert_model.config.bos_token_id if bert_model.config.bos_token_id is not None else 1]]
     ).to(device)
     d_mask = torch.LongTensor([[1]]).to(device)
     sent_dim = bert_model(d_ids, attention_mask=d_mask)[1].shape[-1]
     qa_embedding = ELI5CQAEmbedding(bert_model, sent_dim).to(device)
-    param_dict = torch.load(retriever_model_path)
-    qa_embedding.load_state_dict(param_dict['model'])
+    projection_dict = torch.load(bert_projection_layer_path)
+    qa_embedding.load_projections_state_dict(projection_dict)
     return qa_tokenizer, qa_embedding
 
 
 def load_generator_model(device='cuda:0'):
-    model_name = bart_model_name
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
-    # param_dict = torch.load(generator_model_path)  # has model weights, optimizer, and scheduler states
-    # model.load_state_dict(param_dict['model'])
-    return tokenizer, model
+    s2s_tokenizer = AutoTokenizer.from_pretrained(bart_model_name)
+    s2s_model = AutoModelForSeq2SeqLM.from_pretrained(bart_model_name).to(device)
+    return s2s_tokenizer, s2s_model
 
 
 class ELI5cQAModel:
