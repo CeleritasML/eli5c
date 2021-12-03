@@ -1,5 +1,6 @@
 import logging
 import math
+import os.path
 import pickle
 from time import time
 
@@ -9,10 +10,15 @@ from torch.utils import checkpoint
 from transformers import AutoTokenizer, AutoModel, AutoModelForSeq2SeqLM
 
 bert_model_name = 'jsgao/bert-eli5c-retriever'
+bart_model_name = 'jsgao/bart-eli5c'
+
 bert_projection_layer_path = 'models/bert_eli5c_projection.pt'
 wiki_embedding_path = 'models/wiki40b_index.bin'
+wiki_embedding_url = 'https://drive.google.com/file/d/1-ik5uQkyYjbgytgFrKLTbK7Idcwo49Cl/view?usp=sharing'
 
-bart_model_name = 'jsgao/bart-eli5c'
+if not os.path.exists(wiki_embedding_path):
+    raise FileNotFoundError('Can\'t find pre-computed wiki embeddings at %s, please manually download it from %s' %
+                            (wiki_embedding_path, wiki_embedding_url))
 
 
 def load_wiki_passage_and_index():
