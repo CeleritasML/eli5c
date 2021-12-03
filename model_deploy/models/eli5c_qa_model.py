@@ -9,9 +9,8 @@ from torch.utils import checkpoint
 from transformers import AutoTokenizer, AutoModel, AutoModelForSeq2SeqLM
 
 wiki_embedding_path = 'models/wiki40b_index.bin'
-bart_model_name = 'facebook/bart-large'
+bart_model_name = 'jsgao/bart-eli5c'
 retriever_model_path = 'models/eli5c_retriever_model.bin'
-generator_model_path = 'models/eli5c_bart_model_chem1_9.pth'
 
 
 def load_wiki_passage_and_index():
@@ -95,8 +94,8 @@ def load_generator_model(device='cuda:0'):
     model_name = bart_model_name
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
-    param_dict = torch.load(generator_model_path)  # has model weights, optimizer, and scheduler states
-    model.load_state_dict(param_dict['model'])
+    # param_dict = torch.load(generator_model_path)  # has model weights, optimizer, and scheduler states
+    # model.load_state_dict(param_dict['model'])
     return tokenizer, model
 
 
@@ -167,7 +166,7 @@ class ELI5cQAModel:
 
 if __name__ == '__main__':
     st_time = time()
-    model = ELI5cQAModel()
+    model = ELI5cQAModel('cuda:0')
     print('loaded model', time() - st_time)
     answer = model.ask('Why do we, as humans, crave social interaction and attention?')
     print('finish inference', time() - st_time)
