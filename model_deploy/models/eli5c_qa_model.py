@@ -86,6 +86,12 @@ class ELI5CQAEmbedding(torch.nn.Module):
         self.project_q.load_state_dict(project_layers_dict['project_q'])
         self.project_a.load_state_dict(project_layers_dict['project_a'])
 
+    def save_projections_state_dict(self, projection_save_path):
+        torch.save({
+            'project_q': self.project_q.state_dict(),
+            'project_a': self.project_a.state_dict()
+        }, projection_save_path)
+
 
 def load_retriever_model(device='cuda:0'):
     qa_tokenizer = AutoTokenizer.from_pretrained(bert_model_name)

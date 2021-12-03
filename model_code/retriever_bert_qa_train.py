@@ -102,6 +102,16 @@ class ELI5CQAEmbedding(torch.nn.Module):
         loss = (loss_qa + loss_aq) / 2
         return loss
 
+    def load_projections_state_dict(self, project_layers_dict):
+        self.project_q.load_state_dict(project_layers_dict['project_q'])
+        self.project_a.load_state_dict(project_layers_dict['project_a'])
+
+    def save_projections_state_dict(self, projection_save_path):
+        torch.save({
+            'project_q': self.project_q.state_dict(),
+            'project_a': self.project_a.state_dict()
+        }, projection_save_path)
+
 
 def make_qa_retriever_model(model_name='google/bert_uncased_L-8_H-768_A-12', from_file=None, device='cuda:0'):
     tokenizer = AutoTokenizer.from_pretrained(model_name)
