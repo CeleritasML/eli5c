@@ -16,7 +16,7 @@ The pre-trained additional linear projection layers in the retriever are also du
 
 The pre-computed wikipedia indexes need to be downloaded from Google Drive [wiki40b_index.bin](https://drive.google.com/file/d/1-ik5uQkyYjbgytgFrKLTbK7Idcwo49Cl/view?usp=sharing) (file size: 8.50 GB) and put it into the `models/` folder.
 
-**The binary file is a trained faiss IndexIVFFlat object, the object may not be able to work when using a different faiss version.** If that happens, try to download the embedding vectors file from Google Drive [wiki40b.dat](https://drive.google.com/file/d/1ywlO_3x3RcYwO6kdwWHICyxXjZM6s9x2/view?usp=sharing) and put it into `/model_code/embeds/` folder and re-run `/model_code/retriever_bert_doc_query.py` to get a new `wiki40b_index.bin` file for your faiss version.
+**The binary file is a trained faiss IndexIVFFlat object, the object may not be able to work when using a different faiss version.** If that happens, try to download the embedding vectors file from Google Drive [wiki40b.dat](https://drive.google.com/file/d/1ywlO_3x3RcYwO6kdwWHICyxXjZM6s9x2/view?usp=sharing) and put it into `prepare/` folder and re-run `prepare/generate_wiki_index.py` to get a new `wiki40b_index.bin` file for your faiss version.
 
 ## 4 Deploy Model
 
